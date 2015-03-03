@@ -1,0 +1,21 @@
+apply plugin: 'groovy'
+apply plugin: 'maven'
+
+dependencies {
+	compile gradleApi()
+	compile localGroovy()
+	runtime 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.4'
+}
+
+repositories { mavenCentral() }
+
+group='com.electriccloud.plugins'
+version='1.0-SNAPSHOT'
+
+uploadArchives {
+	repositories {
+		mavenDeployer {
+			repository(url: uri('repo'))
+		}
+	}
+}
