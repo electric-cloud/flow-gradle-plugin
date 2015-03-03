@@ -14,7 +14,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath group: 'com.electriccloud.plugins', name: 'commander-gradle-plugin',
+        classpath group: 'com.electriccloud.plugins', name: 'flow-gradle-plugin',
                                   version: '1.0-SNAPSHOT'
     }
 }
