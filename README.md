@@ -3,7 +3,7 @@ A gradle plugin that houses the logic to build our ElectricFlow plugins.
 
 To build plugin use ./gradlew uploadArchives
 
-To use plugin:
+Sample build.gradle:
 
 ```groovy
 buildscript {
