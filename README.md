@@ -20,4 +20,12 @@ buildscript {
 }
 
 apply plugin: 'commander-gradle-plugin'
+group = 'com.electriccloud'
+description = "Plugins : <plugin name>"
+version = "1.0.0.$buildNumber"
+
+gwt {
+	modules 'GWT module name, e.g. ecplugins.<plugin>.ConfigurationManagement'
+}
+
 ```
