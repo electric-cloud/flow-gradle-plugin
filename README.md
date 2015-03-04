@@ -9,17 +9,17 @@ Sample build.gradle:
 buildscript {
     repositories {
         maven {
-            url uri('../flow-gradle-plugin/repo')
+            url 'http://dl.bintray.com/ecpluginsdev/maven'
         }
+
         jcenter()
     }
     dependencies {
-        classpath group: 'com.electriccloud.plugins', name: 'flow-gradle-plugin',
-                                  version: '1.0-SNAPSHOT'
+        classpath group: 'com.electriccloud.plugins', name: 'flow-gradle-plugin'
     }
 }
 
-apply plugin: 'commander-gradle-plugin'
+apply plugin: 'flow-gradle-plugin'
 group = 'com.electriccloud'
 description = "Plugins : <plugin name>"
 version = "1.0.0.$buildNumber"

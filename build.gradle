@@ -1,5 +1,15 @@
 apply plugin: 'groovy'
-apply plugin: 'maven'
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.1'
+    }
+}
 
 dependencies {
 	compile gradleApi()
@@ -10,12 +20,34 @@ dependencies {
 repositories { mavenCentral() }
 
 group='com.electriccloud.plugins'
-version='1.0-SNAPSHOT'
+version='1.0'
 
-uploadArchives {
-	repositories {
-		mavenDeployer {
-			repository(url: uri('repo'))
+task wrapper(type: Wrapper) {
+	gradleVersion = '2.3'
+}
+
+publishing {
+	publications {
+		maven(MavenPublication) {
+			from components.java
 		}
 	}
+}
+
+bintray {
+	user = 'ecpluginsdev'
+	key = '6744c840ab449d8ded32f3867f34d3d0c256b054'
+	publish = true
+	dryRun = false
+	publications = ['maven']
+
+        pkg {
+            repo = 'maven'
+	    name = project.name
+	    desc = 'A gradle plugin that houses the logic to build our ElectricFlow plugins'
+	    websiteUrl = 'http://electric-cloud.com'
+	    licenses = ['mit']
+	    publicDownloadNumbers = true
+	    vcsUrl = 'https://github.com/electriccommunity/flow-gradle-plugin.git'
+        }
 }
