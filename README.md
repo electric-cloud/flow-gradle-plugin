@@ -3,6 +3,7 @@ A gradle plugin that houses the logic to build our ElectricFlow plugins.
 
 To build plugin use ./gradlew jar.
 To upload on Bintray use ./gradlew bintrayUpload.
+If you make multiple uploads of same version, make sure you delete version through bintray web interface. 
 
 Sample build.gradle:
 
