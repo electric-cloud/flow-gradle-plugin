@@ -73,6 +73,18 @@ class BuildPlugin implements Plugin<Project> {
 			apply plugin: 'gwt-compiler'
 
 			
+			ext {
+				buildNumber = System.env.BUILD_NUMBER ? System.env.BUILD_NUMBER : '0'
+				commanderHome = System.env.COMMANDER_HOME
+				commanderServer = System.env.COMMANDER_SERVER ? System.env.COMMANDER_SERVER : 'localhost'
+				commanderUser = System.env.COMMANDER_USER ? System.env.COMMANDER_USER : 'admin'
+				commanderPassword = System.env.COMMANDER_PASSWORD ? System.env.COMMANDER_PASSWORD : 'changeme'
+			}
+
+			version =  "${project.version}.${project.buildNumber}"
+			ext.pluginName = "${project.name}-${project.version}"
+
+
 			repositories {
 				mavenCentral()
 				jcenter()
@@ -151,15 +163,6 @@ class BuildPlugin implements Plugin<Project> {
 
 				from sourceSets.main.output
 				from (tasks.compileGwt.outputs, { into('htdocs/war') })
-			}
-
-			ext {
-				pluginName = "$name-$version"
-				buildNumber = System.env.BUILD_NUMBER ? System.env.BUILD_NUMBER : '0'
-				commanderHome = System.env.COMMANDER_HOME
-				commanderServer = System.env.COMMANDER_SERVER ? System.env.COMMANDER_SERVER : 'localhost'
-				commanderUser = System.env.COMMANDER_USER ? System.env.COMMANDER_USER : 'admin'
-				commanderPassword = System.env.COMMANDER_PASSWORD ? System.env.COMMANDER_PASSWORD : 'changeme'
 			}
 
 			gwt {

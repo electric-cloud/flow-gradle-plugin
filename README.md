@@ -21,10 +21,11 @@ buildscript {
     }
 }
 
-apply plugin: 'flow-gradle-plugin'
 group = 'com.electriccloud'
 description = "Plugins : <plugin name>"
-version = "1.0.0.$buildNumber"
+version = "1.0.0"
+
+apply plugin: 'flow-gradle-plugin'
 
 gwt {
 	modules 'GWT module name, e.g. ecplugins.<plugin>.ConfigurationManagement'
