@@ -75,6 +75,7 @@ class BuildPlugin implements Plugin<Project> {
 			
 			repositories {
 				mavenCentral()
+				jcenter()
 				flatDir { dirs 'libs' }
 			}
 
