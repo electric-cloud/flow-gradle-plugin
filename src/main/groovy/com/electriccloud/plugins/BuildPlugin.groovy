@@ -59,10 +59,10 @@ class BuildPlugin implements Plugin<Project> {
 				}
 
 				project.exec {
-					commandLine ectool, serverOpt, 'installPlugin', jar.archivePath
+					commandLine ectool, serverOpt, 'installPlugin', project.jar.archivePath
 				}
 
-				exec {
+				project.exec {
 					commandLine ectool, serverOpt, 'promotePlugin', project.pluginName
 				}
 			}
