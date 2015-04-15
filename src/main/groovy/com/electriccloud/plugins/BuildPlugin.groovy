@@ -92,9 +92,9 @@ class BuildPlugin implements Plugin<Project> {
 			}
 
 			dependencies {
-				compile group: project.group, name: "commander-sdk", version: "5.1.0-SNAPSHOT"
+				compile group: project.group, name: "commander-sdk", version: "5.+"
 				compile group: project.group, name: "commander-client", version: "5.0.0-SNAPSHOT"
-				compile group: project.group, name: "ec_internal", version: "5.1.0-SNAPSHOT"
+				compile group: project.group, name: "ec_internal", version: "5.+"
 				compile group: project.group, name: "ec-test", version: "5.0.0-SNAPSHOT"
 				compile "com.intellij:annotations:132.839-PATCH1"
 				compile "com.google.guava:guava-gwt:16.+"
