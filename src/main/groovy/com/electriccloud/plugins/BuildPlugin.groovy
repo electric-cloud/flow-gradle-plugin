@@ -100,6 +100,9 @@ class BuildPlugin implements Plugin<Project> {
 				compile "com.google.guava:guava-gwt:16.+"
 				compile "com.google.gwt.inject:gin:1.5.0"
 				compile "com.gwtplatform:gwtp-all:0.8-PATCH5"
+				compile group: "com.google.gwt", name: "gwt-dev", version: "2.5.0"
+				compile group: "com.google.gwt", name: "gwt-servlet", version: "2.5.0"
+				compile group: "com.google.gwt", name: "gwt-user", version: "2.5.0"
 			}
 
 			processResources {
