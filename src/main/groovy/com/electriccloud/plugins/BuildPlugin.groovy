@@ -71,7 +71,7 @@ class BuildPlugin implements Plugin<Project> {
 		project.configure(project) {
 			apply plugin: 'java'
 			apply plugin: 'gwt-compiler'
-
+			defaultTasks 'jar'
 			
 			ext {
 				buildNumber = System.env.BUILD_NUMBER ? System.env.BUILD_NUMBER : '0'
