@@ -15,10 +15,11 @@ dependencies {
 
 repositories { mavenCentral() }
 
+// Set generated pligun class files to be compatible with JDK6 
 tasks.withType(GroovyCompile) { targetCompatibility = '1.6' }
 
 group='com.electriccloud.plugins'
-version='1.21'
+version='1.23'
 
 task wrapper(type: Wrapper) { gradleVersion = '2.3' }
 

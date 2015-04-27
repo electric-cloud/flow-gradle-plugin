@@ -86,6 +86,10 @@ class BuildPlugin implements Plugin<Project> {
 
 
 			repositories {
+				maven {
+					url 'http://dl.bintray.com/ecpluginsdev/maven'
+				}
+				
 				mavenCentral()
 				jcenter()
 				flatDir { dirs 'libs' }
