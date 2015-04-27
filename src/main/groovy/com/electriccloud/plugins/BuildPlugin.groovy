@@ -18,7 +18,7 @@ class BuildPlugin implements Plugin<Project> {
 			project.tasks.deploy.dependsOn('jar')
 			project.tasks.deploy.setDescription('Deploys plugin on Commander server')
 		}
-		
+
 		if(!project.getTasksByName('processProjectXml', true).size()) {
 			project.task('processProjectXml') << {
 				def resourcesPath = "${project.buildDir}/resources/main"
@@ -72,7 +72,7 @@ class BuildPlugin implements Plugin<Project> {
 			apply plugin: 'java'
 			apply plugin: 'gwt-compiler'
 			defaultTasks 'jar'
-			
+
 			ext {
 				buildNumber = System.env.BUILD_NUMBER ? System.env.BUILD_NUMBER : '0'
 				commanderHome = System.env.COMMANDER_HOME
@@ -93,9 +93,10 @@ class BuildPlugin implements Plugin<Project> {
 
 			dependencies {
 				compile group: project.group, name: "commander-sdk", version: "5.+"
-				compile group: project.group, name: "commander-client", version: "5.0.0-SNAPSHOT"
+				compile group: project.group, name: "commander-client", version: "5.+"
 				compile group: project.group, name: "ec_internal", version: "5.+"
-				compile group: project.group, name: "ec-test", version: "5.0.0-SNAPSHOT"
+				compile group: project.group, name: "ec-test", version: "5.+"
+
 				compile "com.intellij:annotations:132.839-PATCH1"
 				compile "com.google.guava:guava-gwt:16.+"
 				compile "com.google.gwt.inject:gin:1.5.0"
@@ -166,9 +167,7 @@ class BuildPlugin implements Plugin<Project> {
 			}
 
 			gwt {
-				/**
-				 *  Setup reasonable memory defaults for GWT compiler
-				 */
+				// Setup reasonable memory defaults for GWT compiler
 				minHeapSize '512M'
 				maxHeapSize '1024M'
 				gwtVersion '2.7.0'
