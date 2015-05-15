@@ -1,7 +1,9 @@
 package com.electriccloud.plugins
 
+import org.gradle.api.GradleException
 import org.gradle.api.Project;
 import org.gradle.api.Plugin;
+import org.gradle.api.tasks.Exec
 
 import javax.xml.parsers.DocumentBuilderFactory
 import javax.xml.xpath.XPathFactory
@@ -17,6 +19,9 @@ class BuildPlugin implements Plugin<Project> {
 		project.afterEvaluate {
 			project.tasks.deploy.dependsOn('jar')
 			project.tasks.deploy.setDescription('Deploys plugin on Commander server')
+
+			project.tasks.systemtest.dependsOn('jar')
+			project.tasks.systemtest.setDescription('Run system tests on Commander server')
 		}
 
 		if(!project.getTasksByName('processProjectXml', true).size()) {
@@ -46,6 +51,33 @@ class BuildPlugin implements Plugin<Project> {
 				def transformer = TransformerFactory.newInstance().newTransformer()
 
 				transformer.transform(source, result)
+			}
+		}
+
+		if(!project.getTasksByName('systemtest', true).size()) {
+			project.task('systemtest') << {
+				if(null == project.commanderHome) {
+					throw new GradleException('Required COMMANDER_HOME environment variable not set.')
+				}
+
+				def  ecperl = project.commanderHome ? "${project.commanderHome}/bin/ec-perl" : "ec-perl"
+				def ntestHome = System.env.TESTFRAMEWORK_HOME
+
+				if(null == ntestHome) {
+					throw new GradleException('Required TESTFRAMEWORK_HOME environment variable not set.')
+				}
+
+				def envmap = ['PLUGINS_ARTIFACTS': project.buildDir, 'PLUGIN_NAME': project.pluginName, 'PLUGIN_VERSION': project.version]
+
+				project.exec {
+					environment envmap
+					commandLine ecperl, 'systemtest/setup.pl', project.commanderServer, System.env.OUTTOP
+				}
+
+				project.exec {
+					environment envmap
+					commandLine ecperl, "-I${ntestHome}/ntest", "-I${ntestHome}/perl", "${ntestHome}/ntest/ntest", "--target", project.commanderServer, "systemtest"
+				}
 			}
 		}
 
@@ -86,10 +118,8 @@ class BuildPlugin implements Plugin<Project> {
 
 
 			repositories {
-				maven {
-					url 'http://dl.bintray.com/ecpluginsdev/maven'
-				}
-				
+				maven { url 'http://dl.bintray.com/ecpluginsdev/maven' }
+
 				mavenCentral()
 				jcenter()
 				flatDir { dirs 'libs' }
@@ -155,8 +185,8 @@ class BuildPlugin implements Plugin<Project> {
 				}
 
 				outputs.upToDateWhen { false }
-				appendix = "plugin"
-				destinationDir = buildDir
+				archiveName = project.name
+				destinationDir = new File("${project.buildDir}/${project.name}")
 				includeEmptyDirs = false
 				excludes = [
 					'WEB-INF/**',
