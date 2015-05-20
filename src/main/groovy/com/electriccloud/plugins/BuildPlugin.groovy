@@ -22,6 +22,7 @@ class BuildPlugin implements Plugin<Project> {
 
 			project.tasks.systemtest.dependsOn('jar')
 			project.tasks.systemtest.setDescription('Run system tests on Commander server')
+			project.tasks.unittest.setDescription('Run perl unit tests')
 		}
 
 		if(!project.getTasksByName('processProjectXml', true).size()) {
@@ -43,7 +44,9 @@ class BuildPlugin implements Plugin<Project> {
 					def xpath = xmlp.evaluate('xpath', it)
 					def nodes = xmlp.evaluate(xpath, projectXml.documentElement, XPathConstants.NODESET)
 
-					nodes.each { it.setTextContent(new File(file).text) }
+					nodes.each {
+						it.setTextContent(new File(file).text)
+					}
 				}
 
 				def source = new DOMSource(projectXml)
@@ -54,48 +57,83 @@ class BuildPlugin implements Plugin<Project> {
 			}
 		}
 
-		if(!project.getTasksByName('systemtest', true).size()) {
-			project.task('systemtest') << {
-				if(null == project.commanderHome) {
-					throw new GradleException('Required COMMANDER_HOME environment variable not set.')
-				}
-
-				def  ecperl = project.commanderHome ? "${project.commanderHome}/bin/ec-perl" : "ec-perl"
-				def ntestHome = System.env.TESTFRAMEWORK_HOME
-
-				if(null == ntestHome) {
+		if(!project.getTasksByName('unittest', true).size()) {
+			project.task('unittest') << {
+				if(null == project.ntestHome) {
 					throw new GradleException('Required TESTFRAMEWORK_HOME environment variable not set.')
 				}
 
-				def envmap = ['PLUGINS_ARTIFACTS': project.buildDir, 'PLUGIN_NAME': project.pluginName, 'PLUGIN_VERSION': project.version]
+				def envmap = [
+					'COMMANDER_SERVER': project.commanderServer,
+					'COMMANDER_USER': project.commanderUser,
+					'COMMANDER_PASSWORD': project.commanderPassword,
+					'COMMANDER_HOME': project.commanderHome
+				]
 
 				project.exec {
 					environment envmap
-					commandLine ecperl, 'systemtest/setup.pl', project.commanderServer, System.env.OUTTOP
+					commandLine project.ecperl, "-I${project.ntestHome}/perl", "-Isrc/main/resources/project", "-MTest::Harness", "-e", "\$\$Test::Harness::verbose=1; runtests glob('t/*.t');"
+				}
+			}
+		}
+
+		if(!project.getTasksByName('systemtest', true).size()) {
+			project.task('systemtest') << {
+				if(null == project.ntestHome) {
+					throw new GradleException('Required TESTFRAMEWORK_HOME environment variable not set.')
+				}
+
+				def outtop = System.env.OUTTOP ? System.env.OUTTOP : "${project.buildDir}/tests"
+
+				def envmap = [
+					'COMMANDER_SERVER': project.commanderServer,
+					'COMMANDER_USER': project.commanderUser,
+					'COMMANDER_PASSWORD': project.commanderPassword,
+					'COMMANDER_HOME': project.commanderHome,
+
+					'PLUGINS_ARTIFACTS': project.buildDir,
+					'PLUGIN_NAME': project.pluginName,
+					'PLUGIN_VERSION': project.version,
+					
+					'OUTTOP': outtop
+				]
+
+				project.exec {
+					environment envmap
+					commandLine project.ecperl, 'systemtest/setup.pl', project.commanderServer, outtop
 				}
 
 				project.exec {
 					environment envmap
-					commandLine ecperl, "-I${ntestHome}/ntest", "-I${ntestHome}/perl", "${ntestHome}/ntest/ntest", "--target", project.commanderServer, "systemtest"
+					commandLine project.ecperl, "-I${project.ntestHome}/ntest", "-I${project.ntestHome}/perl", "${project.ntestHome}/ntest/ntest", "--target", project.commanderServer, "systemtest"
 				}
 			}
 		}
 
 		if(!project.getTasksByName('deploy', true).size()) {
 			project.task('deploy') << {
-				def ectool = project.commanderHome ? "${project.commanderHome}/bin/ectool" : "ectool"
 				def serverOpt = "--server ${project.commanderServer}"
 
+				def envmap = [
+					'COMMANDER_SERVER': project.commanderServer,
+					'COMMANDER_USER': project.commanderUser,
+					'COMMANDER_PASSWORD': project.commanderPassword,
+					'COMMANDER_HOME': project.commanderHome
+				]
+
 				project.exec {
-					commandLine ectool, serverOpt, 'login', project.commanderUser, project.commanderPassword
+					environment envmap
+					commandLine project.ectool, serverOpt, 'login', project.commanderUser, project.commanderPassword
 				}
 
 				project.exec {
-					commandLine ectool, serverOpt, 'installPlugin', project.jar.archivePath
+					environment envmap
+					commandLine project.ectool, serverOpt, 'installPlugin', project.jar.archivePath
 				}
 
 				project.exec {
-					commandLine ectool, serverOpt, 'promotePlugin', project.pluginName
+					environment envmap
+					commandLine project.ectool, serverOpt, 'promotePlugin', project.pluginName
 				}
 			}
 		}
@@ -107,10 +145,12 @@ class BuildPlugin implements Plugin<Project> {
 
 			ext {
 				buildNumber = System.env.BUILD_NUMBER ? System.env.BUILD_NUMBER : '0'
-				commanderHome = System.env.COMMANDER_HOME
+				commanderHome = System.env.COMMANDER_HOME ? System.env.COMMANDER_HOME : '/opt/electriccloud/electriccommander'
 				commanderServer = System.env.COMMANDER_SERVER ? System.env.COMMANDER_SERVER : 'localhost'
 				commanderUser = System.env.COMMANDER_USER ? System.env.COMMANDER_USER : 'admin'
 				commanderPassword = System.env.COMMANDER_PASSWORD ? System.env.COMMANDER_PASSWORD : 'changeme'
+				ecperl = commanderHome ? "$commanderHome/bin/ec-perl" : "ec-perl"
+				ntestHome = System.env.TESTFRAMEWORK_HOME
 			}
 
 			version =  "${project.version}.${project.buildNumber}"
@@ -118,11 +158,15 @@ class BuildPlugin implements Plugin<Project> {
 
 
 			repositories {
-				maven { url 'http://dl.bintray.com/ecpluginsdev/maven' }
+				maven {
+					url 'http://dl.bintray.com/ecpluginsdev/maven'
+				}
 
 				mavenCentral()
 				jcenter()
-				flatDir { dirs 'libs' }
+				flatDir {
+					dirs 'libs'
+				}
 			}
 
 			dependencies {
@@ -173,18 +217,22 @@ class BuildPlugin implements Plugin<Project> {
 					compileGwt
 				]
 
-				doFirst { println "Building plugin jar: $archiveName" }
+				doFirst {
+					println "Building plugin jar: $archiveName"
+				}
 
 				manifest {
 					attributes (
-							'Implementation-Vendor': 'Electric Cloud, Inc.',
-							'Implementation-Title': project.name,
-							'Implementation-Version': project.version,
-							'Implementation-Vendor-Id': project.group
-							)
+					'Implementation-Vendor': 'Electric Cloud, Inc.',
+					'Implementation-Title': project.name,
+					'Implementation-Version': project.version,
+					'Implementation-Vendor-Id': project.group
+					)
 				}
 
-				outputs.upToDateWhen { false }
+				outputs.upToDateWhen {
+					false
+				}
 				archiveName = project.name
 				destinationDir = new File("${project.buildDir}/${project.name}")
 				includeEmptyDirs = false
@@ -197,7 +245,9 @@ class BuildPlugin implements Plugin<Project> {
 				]
 
 				from sourceSets.main.output
-				from (tasks.compileGwt.outputs, { into('htdocs/war') })
+				from (tasks.compileGwt.outputs, {
+					into('htdocs/war')
+				})
 			}
 
 			gwt {
