@@ -233,7 +233,7 @@ class BuildPlugin implements Plugin<Project> {
 				outputs.upToDateWhen {
 					false
 				}
-				archiveName = project.name
+				archiveName = "${project.name}.jar"
 				destinationDir = new File("${project.buildDir}/${project.name}")
 				includeEmptyDirs = false
 				excludes = [
