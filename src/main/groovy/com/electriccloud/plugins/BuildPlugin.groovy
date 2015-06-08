@@ -18,6 +18,8 @@ class BuildPlugin implements Plugin<Project> {
 	public void apply(Project project) {
 		project.afterEvaluate {
 			project.tasks.deploy.dependsOn('jar')
+			project.tasks.jarWithVersion.dependsOn('jar')
+
 			project.tasks.deploy.setDescription('Deploys plugin on Commander server')
 
 			project.tasks.systemtest.dependsOn('jar')
@@ -54,6 +56,20 @@ class BuildPlugin implements Plugin<Project> {
 				def transformer = TransformerFactory.newInstance().newTransformer()
 
 				transformer.transform(source, result)
+			}
+		}
+
+		if(!project.getTasksByName('printPluginVersion', true).size()) {
+			project.task('printPluginVersion') << { println "${project.version}" }
+		}
+
+		if(!project.getTasksByName('jarWithVersion', true).size()) {
+			project.task('jarWithVersion') << {
+				project.copy {
+					from "${project.buildDir}/${project.name}"
+					into "${project.buildDir}/${project.name}"
+					rename("${project.name}.jar", "${project.name}-${project.version}.jar")
+				}
 			}
 		}
 
@@ -94,7 +110,7 @@ class BuildPlugin implements Plugin<Project> {
 					'PLUGINS_ARTIFACTS': project.buildDir,
 					'PLUGIN_NAME': project.pluginName,
 					'PLUGIN_VERSION': project.version,
-					
+
 					'OUTTOP': outtop
 				]
 
@@ -141,7 +157,8 @@ class BuildPlugin implements Plugin<Project> {
 		project.configure(project) {
 			apply plugin: 'java'
 			apply plugin: 'gwt-compiler'
-			defaultTasks 'jar'
+
+			defaultTasks 'jarWithVersion'
 
 			ext {
 				buildNumber = System.env.BUILD_NUMBER ? System.env.BUILD_NUMBER : '0'
@@ -158,15 +175,11 @@ class BuildPlugin implements Plugin<Project> {
 
 
 			repositories {
-				maven {
-					url 'http://dl.bintray.com/ecpluginsdev/maven'
-				}
+				maven { url 'http://dl.bintray.com/ecpluginsdev/maven' }
 
 				mavenCentral()
 				jcenter()
-				flatDir {
-					dirs 'libs'
-				}
+				flatDir { dirs 'libs' }
 			}
 
 			dependencies {
@@ -217,22 +230,16 @@ class BuildPlugin implements Plugin<Project> {
 					compileGwt
 				]
 
-				doFirst {
-					println "Building plugin jar: $archiveName"
-				}
-
 				manifest {
 					attributes (
-					'Implementation-Vendor': 'Electric Cloud, Inc.',
-					'Implementation-Title': project.name,
-					'Implementation-Version': project.version,
-					'Implementation-Vendor-Id': project.group
-					)
+							'Implementation-Vendor': 'Electric Cloud, Inc.',
+							'Implementation-Title': project.name,
+							'Implementation-Version': project.version,
+							'Implementation-Vendor-Id': project.group
+							)
 				}
 
-				outputs.upToDateWhen {
-					false
-				}
+				outputs.upToDateWhen { false }
 				archiveName = "${project.name}.jar"
 				destinationDir = new File("${project.buildDir}/${project.name}")
 				includeEmptyDirs = false
@@ -245,9 +252,7 @@ class BuildPlugin implements Plugin<Project> {
 				]
 
 				from sourceSets.main.output
-				from (tasks.compileGwt.outputs, {
-					into('htdocs/war')
-				})
+				from (tasks.compileGwt.outputs, { into('htdocs/war') })
 			}
 
 			gwt {
