@@ -21,7 +21,8 @@ class BuildPlugin implements Plugin<Project> {
 			project.tasks.jarWithVersion.dependsOn('jar')
 
 			project.tasks.deploy.setDescription('Deploys plugin on Commander server')
-
+			project.tasks.printPluginVersion.setDescription('Prints current plugin version')
+			
 			project.tasks.systemtest.dependsOn('jar')
 			project.tasks.systemtest.setDescription('Run system tests on Commander server')
 			project.tasks.unittest.setDescription('Run perl unit tests')
