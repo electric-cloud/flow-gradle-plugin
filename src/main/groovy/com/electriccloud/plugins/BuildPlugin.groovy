@@ -168,6 +168,7 @@ class BuildPlugin implements Plugin<Project> {
 				commanderUser = System.env.COMMANDER_USER ? System.env.COMMANDER_USER : 'admin'
 				commanderPassword = System.env.COMMANDER_PASSWORD ? System.env.COMMANDER_PASSWORD : 'changeme'
 				ecperl = commanderHome ? "$commanderHome/bin/ec-perl" : "ec-perl"
+				ectool = commanderHome ? "$commanderHome/bin/ec-perl" : "ectool"
 				ntestHome = System.env.TESTFRAMEWORK_HOME
 			}
 
