@@ -17,6 +17,7 @@ class BuildPlugin implements Plugin<Project> {
 	@Override
 	public void apply(Project project) {
 		project.afterEvaluate {
+			project.tasks.processProjectXml.dependsOn('processResources')
 			project.tasks.deploy.dependsOn('jar')
 			project.tasks.jarWithVersion.dependsOn('jar')
 

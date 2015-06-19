@@ -19,7 +19,7 @@ repositories { mavenCentral() }
 tasks.withType(GroovyCompile) { targetCompatibility = '1.6' }
 
 group='com.electriccloud.plugins'
-version='1.47'
+version='1.48'
 
 task wrapper(type: Wrapper) { gradleVersion = '2.3' }
 
