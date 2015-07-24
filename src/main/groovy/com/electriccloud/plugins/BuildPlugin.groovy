@@ -27,6 +27,8 @@ class BuildPlugin implements Plugin<Project> {
 			project.tasks.systemtest.dependsOn('jar')
 			project.tasks.systemtest.setDescription('Run system tests on Commander server')
 			project.tasks.unittest.setDescription('Run perl unit tests')
+
+			project.tasks.compileGwt.dependsOn('processProjectXml')
 		}
 
 		if(!project.getTasksByName('processProjectXml', true).size()) {
@@ -186,9 +188,9 @@ class BuildPlugin implements Plugin<Project> {
 			}
 
 			dependencies {
-				compile group: project.group, name: "commander-sdk", version: "5.+"
+				compile group: project.group, name: "commander-sdk", version: "6.+"
 				compile group: project.group, name: "commander-client", version: "5.+"
-				compile group: project.group, name: "ec_internal", version: "5.+"
+				compile group: project.group, name: "ec_internal", version: "6.+"
 				compile group: project.group, name: "ec-test", version: "5.+"
 
 				compile "com.intellij:annotations:132.839-PATCH1"
