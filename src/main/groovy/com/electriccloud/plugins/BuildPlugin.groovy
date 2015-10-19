@@ -4,6 +4,7 @@ import org.gradle.api.GradleException
 import org.gradle.api.Project;
 import org.gradle.api.Plugin;
 import org.gradle.api.tasks.Exec
+import org.gradle.api.tasks.compile.JavaCompile
 
 import javax.xml.parsers.DocumentBuilderFactory
 import javax.xml.xpath.XPathFactory
@@ -23,7 +24,7 @@ class BuildPlugin implements Plugin<Project> {
 
 			project.tasks.deploy.setDescription('Deploys plugin on Commander server')
 			project.tasks.printPluginVersion.setDescription('Prints current plugin version')
-			
+
 			project.tasks.systemtest.dependsOn('jar')
 			project.tasks.systemtest.setDescription('Run system tests on Commander server')
 			project.tasks.unittest.setDescription('Run perl unit tests')
@@ -160,7 +161,11 @@ class BuildPlugin implements Plugin<Project> {
 
 		project.configure(project) {
 			apply plugin: 'java'
+			apply plugin: 'eclipse'
 			apply plugin: 'gwt-compiler'
+
+			sourceCompatibility = 1.6
+			targetCompatibility = 1.6
 
 			defaultTasks 'jarWithVersion'
 
@@ -188,9 +193,9 @@ class BuildPlugin implements Plugin<Project> {
 			}
 
 			dependencies {
-				compile group: project.group, name: "commander-sdk", version: "6.+"
+				compile group: project.group, name: "commander-sdk", version: "5.+"
 				compile group: project.group, name: "commander-client", version: "5.+"
-				compile group: project.group, name: "ec_internal", version: "6.+"
+				compile group: project.group, name: "ec_internal", version: "5.+"
 				compile group: project.group, name: "ec-test", version: "5.+"
 
 				compile "com.intellij:annotations:132.839-PATCH1"
@@ -260,11 +265,20 @@ class BuildPlugin implements Plugin<Project> {
 				from (tasks.compileGwt.outputs, { into('htdocs/war') })
 			}
 
+			tasks.withType(JavaCompile) {
+				doFirst {
+					if (sourceCompatibility == '1.6' && System.env.RTJAR6_PATH != null) {
+						options.fork = true
+						options.bootClasspath = System.env.RTJAR6_PATH
+					}
+				}
+			}
+
 			gwt {
 				// Setup reasonable memory defaults for GWT compiler
 				minHeapSize '512M'
 				maxHeapSize '1024M'
-				gwtVersion '2.7.0'
+				gwtVersion '2.5.0'
 			}
 		}
 	}
