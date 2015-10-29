@@ -31,7 +31,7 @@ publishing {
 
 bintray {
 	user = 'ecpluginsdev'
-	key = '6744c840ab449d8ded32f3867f34d3d0c256b054'
+	key = bintrayKey
 	publish = true
 	dryRun = false
 	publications = ['maven']
@@ -39,7 +39,7 @@ bintray {
 	pkg {
 		repo = 'maven'
 		name = project.name
-		desc = 'A gradle plugin that houses the logic to build our ElectricFlow plugins'
+		desc = 'A gradle plugin that houses the logic to build ElectricFlow plugins'
 		websiteUrl = 'http://electric-cloud.com'
 		licenses = ['mit']
 		publicDownloadNumbers = true
