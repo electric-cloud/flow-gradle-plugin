@@ -1,35 +1,62 @@
 package com.electriccloud.plugins
 
-import org.gradle.api.GradleException
-import org.gradle.api.Project;
-import org.gradle.api.Plugin;
-import org.gradle.api.tasks.Exec
-import org.gradle.api.tasks.compile.JavaCompile
-
 import javax.xml.parsers.DocumentBuilderFactory
-import javax.xml.xpath.XPathFactory
-import javax.xml.xpath.XPathConstants
+import javax.xml.transform.TransformerFactory
 import javax.xml.transform.dom.DOMSource
 import javax.xml.transform.stream.StreamResult
-import javax.xml.transform.TransformerFactory
+import javax.xml.xpath.XPathConstants
+import javax.xml.xpath.XPathFactory
+
+import org.gradle.api.GradleException
+import org.gradle.api.Plugin
+import org.gradle.api.Project
+import org.gradle.api.tasks.compile.JavaCompile
+
+import com.electriccloud.plugins.tasks.CreateConfiguration
+import com.electriccloud.plugins.tasks.CreateForm
+import com.electriccloud.plugins.tasks.RemoveForm
+
 
 class BuildPlugin implements Plugin<Project> {
+	static final COMPATIBILITY_VERSION = 1.6
 
 	@Override
 	public void apply(Project project) {
 		project.afterEvaluate {
-			project.tasks.processProjectXml.dependsOn('processResources')
-			project.tasks.deploy.dependsOn('jar')
-			project.tasks.jarWithVersion.dependsOn('jar')
 
-			project.tasks.deploy.setDescription('Deploys plugin on Commander server')
-			project.tasks.printPluginVersion.setDescription('Prints current plugin version')
+			project.tasks.with {
 
-			project.tasks.systemtest.dependsOn('jar')
-			project.tasks.systemtest.setDescription('Run system tests on Commander server')
-			project.tasks.unittest.setDescription('Run perl unit tests')
+				deploy.with {
+					dependsOn('jar')
+					description = 'Deploys plugin on ElectricFlow server'
+					group = 'ElectricFlow'
+				}
 
-			project.tasks.compileGwt.dependsOn('processProjectXml')
+				systemtest.with {
+					dependsOn('jar')
+					description = 'Run system tests on Commander server'
+					group = 'ElectricFlow'
+				}
+
+				jarWithVersion.with {
+					dependsOn('jar')
+					group = 'ElectricFlow'
+					description = 'Build plugin jar with version in jar name'
+				}
+
+				compileGwt.dependsOn('processProjectXml')
+				processProjectXml.dependsOn('processResources')
+
+				printPluginVersion.with {
+					description = 'Print current plugin version'
+					group = 'ElectricFlow'
+				}
+
+				unittest.with {
+					description = 'Run perl unit tests'
+					group = 'ElectricFlow'
+				}
+			}
 		}
 
 		if(!project.getTasksByName('processProjectXml', true).size()) {
@@ -159,13 +186,17 @@ class BuildPlugin implements Plugin<Project> {
 			}
 		}
 
+		project.task('createConfiguration', type: CreateConfiguration)
+		project.task('createForm', type: CreateForm)
+		project.task('removeForm', type: RemoveForm)
+
 		project.configure(project) {
 			apply plugin: 'java'
 			apply plugin: 'eclipse'
 			apply plugin: 'gwt-compiler'
 
-			sourceCompatibility = 1.6
-			targetCompatibility = 1.6
+			sourceCompatibility = COMPATIBILITY_VERSION
+			targetCompatibility = COMPATIBILITY_VERSION
 
 			defaultTasks 'jarWithVersion'
 
@@ -183,29 +214,30 @@ class BuildPlugin implements Plugin<Project> {
 			version =  "${project.version}.${project.buildNumber}"
 			ext.pluginName = "${project.name}-${project.version}"
 
-
 			repositories {
-				maven { url 'http://dl.bintray.com/ecpluginsdev/maven' }
-
 				mavenCentral()
 				jcenter()
+				maven { url 'http://dl.bintray.com/ecpluginsdev/maven' }
 				flatDir { dirs 'libs' }
 			}
 
 			dependencies {
-				compile group: project.group, name: "commander-sdk", version: "5.+"
-				compile group: project.group, name: "commander-client", version: "5.+"
-				compile group: project.group, name: "ec_internal", version: "5.+"
-				compile group: project.group, name: "ec-test", version: "5.+"
+				compile "${project.group}:commander-sdk:5.+"
+				compile "${project.group}:commander-client:5.+"
+				compile "${project.group}:ec_internal:5.+"
+				testCompile "${project.group}:ec-test:5.+"
 
-				compile "com.intellij:annotations:132.839-PATCH1"
-				compile "com.google.guava:guava-gwt:16.+"
-				compile "com.google.gwt.inject:gin:1.5.0"
-				compile "com.gwtplatform:gwtp-all:0.8-PATCH5"
-				compile group: "com.google.gwt", name: "gwt-dev", version: "2.5.0"
-				compile group: "com.google.gwt", name: "gwt-servlet", version: "2.5.0"
-				compile group: "com.google.gwt", name: "gwt-user", version: "2.5.0"
+				compile 'com.intellij:annotations:132.839-PATCH1'
+				compile 'com.google.guava:guava-gwt:16.+'
+				compile 'com.google.gwt.inject:gin:1.5.+'
+				compile 'com.gwtplatform:gwtp-all:0.8-PATCH5'
+				compile 'com.google.gwt:gwt-dev:2.5.+'
+				compile 'com.google.gwt:gwt-servlet:2.5.+'
+				compile 'com.google.gwt:gwt-user:2.5.+'
 			}
+
+			apply plugin: 'license'
+			apply plugin:'java-templates'
 
 			processResources {
 				from(projectDir, {
@@ -267,7 +299,7 @@ class BuildPlugin implements Plugin<Project> {
 
 			tasks.withType(JavaCompile) {
 				doFirst {
-					if (sourceCompatibility == '1.6' && System.env.RTJAR6_PATH != null) {
+					if (sourceCompatibility == COMPATIBILITY_VERSION && System.env.RTJAR6_PATH != null) {
 						options.fork = true
 						options.bootClasspath = System.env.RTJAR6_PATH
 					}

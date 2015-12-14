@@ -32,6 +32,23 @@ gwt {
 }
 
 ```
+# Tasks
+
+createConfiguration - Create configuration for plugin
+Parameters:
+* createFormFile file with FormXML for create configuration
+* editFormFile file with FormXML for configuration editing
+* configPropertyName name of property that contains configuration name
+
+createForm - Create new FormXML definition
+Parameters:
+* formFile file with FormXML
+* formDescription description of form
+
+removeForm - Remove FormXML definition
+Parameters:
+* formName name of form to be removed
+
 
 # Environment variables
 

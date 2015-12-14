@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml-bindings version="2.5" xmlns="http://www.eclipse.org/eclipselink/xsds/persistence/oxm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.eclipse.org/eclipselink/xsds/persistence/oxm http://www.eclipse.org/eclipselink/xsds/eclipselink_oxm_2_5.xsd" package-name="com.electriccloud.export.bindings">
+    <java-types>
+        <java-type name="ExportedData">
+            <java-attributes>
+                <xml-element java-attribute="project" type="com.electriccloud.export.Project"></xml-element>
+            </java-attributes>
+        </java-type>
+    </java-types>
+</xml-bindings>

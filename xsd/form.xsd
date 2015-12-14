@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="2.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:annotation>
+        <xsd:appinfo>
+            <jaxb:schemaBindings>
+                <jaxb:package name="com.electriccloud.form.bindings"/>
+            </jaxb:schemaBindings>
+        </xsd:appinfo>
+    </xsd:annotation>
+
+    <xsd:complexType name="formElement">
+        <xsd:sequence>
+            <xsd:element type="xsd:string" name="type"/>
+            <xsd:element type="xsd:string" name="label"/>
+            <xsd:element type="xsd:string" name="property"/>
+            <xsd:element type="xsd:string" name="value" minOccurs="0"/>
+            <xsd:element type="xsd:byte" name="required" minOccurs="0"/>
+            <xsd:element type="xsd:string" name="documentation" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:element name="editor">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="formElement" type="formElement" maxOccurs="unbounded">
+                    <xsd:annotation>
+                        <xsd:appinfo>
+                            <jaxb:property name="formElements"/>
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+</xsd:schema>

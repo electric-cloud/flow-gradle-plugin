@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="2.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:annotation>
+        <xsd:appinfo>
+            <jaxb:schemaBindings>
+                <jaxb:package name="com.electriccloud.manifest.bindings"/>
+            </jaxb:schemaBindings>
+        </xsd:appinfo>
+    </xsd:annotation>
+
+    <xsd:complexType name="file">
+        <xsd:sequence>
+            <xsd:element type="xsd:string" name="path"/>
+            <xsd:element type="xsd:string" name="xpath"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:element name="fileset">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="file" type="file" maxOccurs="unbounded" minOccurs="0">
+                    <xsd:annotation>
+                        <xsd:appinfo>
+                            <jaxb:property name="files"/>
+                        </xsd:appinfo>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+</xsd:schema>

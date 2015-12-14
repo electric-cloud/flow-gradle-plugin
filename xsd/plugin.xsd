@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- commander-plugin.xsd This file is a W3C XML Schema that contains the declaration for the elements in a ElectricCommander plugin configuration file. Copyright (c) 2009 Electric Cloud, Inc. All rights 
+    reserved. -->
+<xs:schema xmlns="http://electric-cloud.com/commander/3.6/plugins" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://electric-cloud.com/commander/3.6/plugins"
+    xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="2.0" attributeFormDefault="unqualified">
+    <xs:annotation>
+        <xs:appinfo>
+            <jaxb:schemaBindings>
+                <jaxb:package name="com.electriccloud.plugin.bindings"/>
+            </jaxb:schemaBindings>
+        </xs:appinfo>
+    </xs:annotation>
+
+    <xs:simpleType name="versionType">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="\d+(\.\d+){0,3}"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:element name="plugin">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="key" minOccurs="1"/>
+                <xs:element ref="version" minOccurs="1"/>
+                <xs:element ref="label" minOccurs="0"/>
+                <xs:element ref="description" minOccurs="0"/>
+                <xs:element ref="help" minOccurs="0"/>
+                <xs:element ref="configure" minOccurs="0"/>
+                <xs:element ref="vendor" minOccurs="0"/>
+                <xs:element ref="author" minOccurs="0"/>
+                <xs:element ref="authorUrl" minOccurs="0"/>
+                <xs:element ref="category" minOccurs="0"/>
+                <xs:element ref="commander-version" minOccurs="0"/>
+                <xs:element ref="depends" maxOccurs="unbounded" minOccurs="0"/>
+                <xs:element ref="components" minOccurs="0"/>
+                <xs:element ref="executables" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="component">
+        <xs:sequence>
+            <xs:element name="javascript" type="xs:string" minOccurs="1" />
+            <xs:element name="request" type="requestType" minOccurs="0" />
+            <xs:element name="style" type="xs:string" minOccurs="0"/>
+            <xs:element name="parameter" type="parameterType" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute type="xs:string" name="name" use="optional"/>
+    </xs:complexType>
+    <xs:complexType name="requestType">
+        <xs:sequence>
+            <xs:any processContents="skip"/>
+        </xs:sequence>
+        <xs:attribute type="xs:string" name="requestId" use="optional"/>
+    </xs:complexType>
+    <xs:complexType name="parameterType">
+        <xs:sequence>
+            <xs:element type="xs:string" name="key"/>
+            <xs:element type="valueType" name="value"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="valueType" mixed="true">
+        <xs:sequence>
+            <xs:any processContents="skip"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="customType">
+        <xs:sequence>
+            <xs:element name="displayName" type="xs:string"/>
+            <xs:element name="description" type="xs:string"/>
+            <xs:element name="page" type="page"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="page">
+        <xs:attribute name="pageName" type="xs:string"/>
+        <xs:attribute name="definition" type="xs:string"/>
+    </xs:complexType>
+    <xs:element type="xs:string" name="key">
+        <xs:annotation>
+            <xs:documentation><![CDATA[
+        Unique identifier of the plugin.  Must not change between  versions. Because this value will be used to construct directory names, it should be limited to characters that are safe to appear in  filenames. It should be unique across all plugins.
+            ]]>
+            </xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element type="versionType" name="version">
+        <xs:annotation>
+            <xs:documentation>Plugin version in the form major.minor?.patch?. Versions will be sorted lexicographically.</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element type="xs:string" name="label">
+        <xs:annotation>
+            <xs:documentation>The name of the plugin as it should be displayed in the UI. If not specified, assumed to be the same as &lt;key>.</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element type="xs:string" name="description">
+        <xs:annotation>
+            <xs:documentation>A short description of the plugin.</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element type="xs:string" name="help">
+        <xs:annotation>
+            <xs:documentation>Location of help for the plugin. Interpreted as a relative path based at plugin's root. Should contain a componentContainer.</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element type="xs:string" name="configure">
+        <xs:annotation>
+            <xs:documentation>Location of configuration for the plugin. Interpreted as a relative path based at plugin's root. Should contain a componentContainer.</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element type="xs:string" name="vendor">
+        <xs:annotation>
+            <xs:documentation>The author of the plugin. (deprecated in favor of author)</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element type="xs:string" name="author">
+        <xs:annotation>
+            <xs:documentation>The vendor of the plugin.</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element type="xs:string" name="authorUrl">
+        <xs:annotation>
+            <xs:documentation>The vendor of the plugin.</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element type="xs:string" name="category">
+        <xs:annotation>
+            <xs:documentation>A short keyword that specifies the general category of plugin.</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="commander-version">
+        <xs:annotation>
+            <xs:documentation>The range of ElectricCommander server versions a plugin works with. The install will fail if the server's version is outside of the specified range. If min (or max) is
+                omitted, the range is considered to include all earlier (or later) versions. The commander-version element can be omitted if no version checks are required.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute type="versionType" name="min" use="optional"/>
+                    <xs:attribute type="versionType" name="max" use="optional"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="depends">
+        <xs:annotation>
+            <xs:documentation>A list of plugin keys that this plugin depends on. The install will fail if the listed plugins are not already installed. If the optional min attribute is specified, the
+                server will only match plugins at least as recent as the specified version.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute type="versionType" name="min" use="optional"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="components">
+        <xs:annotation>
+            <xs:documentation>.</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded" minOccurs="0">
+                <xs:element name="component" type="component" maxOccurs="unbounded" minOccurs="0"/>
+                <xs:element name="customType" type="customType" maxOccurs="unbounded" minOccurs="0"/>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="executables">
+        <xs:complexType>
+            <xs:sequence maxOccurs="unbounded">
+                <xs:element name="pattern" type="xs:string"/>
+            </xs:sequence>
+            <xs:attribute name="useDefaults" type="xs:boolean"/>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

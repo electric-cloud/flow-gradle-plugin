@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema elementFormDefault="qualified" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="2.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:annotation>
+        <xsd:appinfo>
+            <jaxb:schemaBindings>
+                <jaxb:package name="com.electriccloud.export.bindings"/>
+            </jaxb:schemaBindings>
+        </xsd:appinfo>
+    </xsd:annotation>
+
+    <xsd:complexType name="FormalParameter">
+        <xsd:sequence>
+            <xsd:element name="formalParameterName" minOccurs="1" maxOccurs="1" type="xsd:normalizedString"/>
+            <xsd:element name="defaultValue" minOccurs="0" type="xsd:string"/>
+            <xsd:element name="description" minOccurs="0" type="xsd:string"/>
+            <xsd:element name="expansionDeferred" minOccurs="0" type="xsd:int"/>
+            <xsd:element name="required" minOccurs="0" type="xsd:int"/>
+            <xsd:element name="type" minOccurs="1" maxOccurs="1" type="xsd:normalizedString"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="Procedure">
+        <xsd:sequence>
+            <xsd:element name="procedureName" minOccurs="1" maxOccurs="1" type="xsd:normalizedString"/>
+            <xsd:element name="description" minOccurs="0" type="xsd:string"/>
+            <xsd:element name="jobNameTemplate" minOccurs="0" type="xsd:normalizedString"/>
+            <xsd:element name="resourceName" minOccurs="0" type="xsd:string"/>
+            <xsd:element name="workspaceName" minOccurs="0" type="xsd:string"/>
+            <xsd:element name="projectName" minOccurs="0" type="xsd:string"/>
+            <xsd:element name="propertySheet" type="PropertySheet" minOccurs="0"/>
+            <xsd:element name="formalParameter" type="FormalParameter" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="step" type="Step" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="Step">
+        <xsd:sequence>
+            <xsd:element name="stepName" minOccurs="1" maxOccurs="1" type="xsd:normalizedString"/>
+            <xsd:element name="alwaysRun" minOccurs="0" type="xsd:int"/>
+            <xsd:element name="broadcast" minOccurs="0" type="xsd:int"/>
+            <xsd:element name="command" minOccurs="0" type="xsd:string"/>
+            <xsd:element name="condition" minOccurs="0" type="xsd:string"/>
+            <xsd:element name="description" minOccurs="0" type="xsd:string"/>
+            <xsd:element name="errorHandling" minOccurs="0" type="xsd:normalizedString"/>
+            <xsd:element name="exclusive" minOccurs="0" type="xsd:int"/>
+            <xsd:element name="exclusiveMode" minOccurs="0" type="xsd:normalizedString"/>
+            <xsd:element name="logFileName" minOccurs="0" type="xsd:string"/>
+            <xsd:element name="parallel" minOccurs="0" type="xsd:int"/>
+            <xsd:element name="postProcessor" minOccurs="0" type="xsd:normalizedString"/>
+            <xsd:element name="releaseMode" minOccurs="0" type="xsd:normalizedString"/>
+            <xsd:element name="releaseExclusive" minOccurs="0" type="xsd:int"/>
+            <xsd:element name="resourceName" minOccurs="0" type="xsd:string"/>
+            <xsd:element name="retries" minOccurs="0" type="xsd:int"/>
+            <xsd:element name="shell" minOccurs="0" type="xsd:normalizedString"/>
+            <xsd:element name="timeLimit" minOccurs="0" type="xsd:normalizedString"/>
+            <xsd:element name="timeLimitUnits" minOccurs="0" type="xsd:normalizedString"/>
+            <xsd:element name="workingDirectory" minOccurs="0" type="xsd:string"/>
+            <xsd:element name="workspaceName" minOccurs="0" type="xsd:string"/>
+            <xsd:element name="procedureName" minOccurs="0" type="xsd:normalizedString"/>
+            <xsd:element name="projectName" minOccurs="0" type="xsd:normalizedString"/>
+            <xsd:element name="propertySheet" type="PropertySheet" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="Property">
+        <xsd:sequence>
+            <xsd:element name="propertyName" minOccurs="1" maxOccurs="1" type="xsd:normalizedString"/>
+            <xsd:element name="description" minOccurs="0" type="xsd:string"/>
+            <xsd:choice minOccurs="1">
+                <xsd:sequence>
+                    <xsd:element name="expandable" minOccurs="0" type="xsd:int"/>
+                    <xsd:element name="value" minOccurs="0" type="xsd:normalizedString"/>
+                </xsd:sequence>
+                <xsd:element name="propertySheet" type="PropertySheet"/>
+            </xsd:choice>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="PropertySheet">
+        <xsd:sequence>
+            <xsd:element name="property" type="Property" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <jaxb:property name="properties"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="AbstractProject">
+        <xsd:sequence>
+            <xsd:element name="projectName" minOccurs="1" maxOccurs="1" type="xsd:normalizedString"/>
+            <xsd:element name="description" minOccurs="0" type="xsd:string"/>
+            <xsd:element name="workspaceName" minOccurs="0" type="xsd:string"/>
+            <xsd:element name="propertySheet" type="PropertySheet" minOccurs="0" maxOccurs="1"/>
+            <xsd:element name="procedure" type="Procedure" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation>
+                    <xsd:appinfo>
+                        <jaxb:property name="procedures"/>
+                    </xsd:appinfo>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:element name="exportedData">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="exportPath" minOccurs="1" maxOccurs="1" type="xsd:normalizedString"/>
+                <xsd:element name="project" type="AbstractProject" minOccurs="1" maxOccurs="1"/>
+            </xsd:sequence>
+            <xsd:attribute name="version" type="xsd:int" use="required"/>
+            <xsd:attribute name="buildLabel" type="xsd:normalizedString" use="required"/>
+            <xsd:attribute name="buildVersion" type="xsd:normalizedString" use="required"/>
+        </xsd:complexType>
+    </xsd:element>
+</xsd:schema>
