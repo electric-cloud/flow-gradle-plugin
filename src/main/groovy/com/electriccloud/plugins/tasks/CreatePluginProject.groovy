@@ -19,11 +19,11 @@ import com.electriccloud.plugin.bindings.Plugin
 import templates.ProjectTemplate
 
 
-class CreateConfiguration extends DefaultTask {
+class CreatePluginProject extends DefaultTask {
 
-	public CreateConfiguration() {
+	public CreatePluginProject() {
 		super
-		description = 'Create configuration for plugin'
+		description = 'Create new plugin project'
 		group = 'ElectricFlow templates'
 	}
 
@@ -39,17 +39,11 @@ class CreateConfiguration extends DefaultTask {
 		def File file = new File(path)
 		def formName = file.name.split("\\.", 2)[0]
 
-		project.copy {
-			from 	file.canonicalPath
-			into 'src/main/resources/project/ui_forms'
-			include file.name
-		}
-
 		manifest.setMapping("ui_forms/${file.name}", "//property[propertyName='ui_forms']/propertySheet/property[propertyName='$formName']/value")
 
 		export.project.removeForm(formName)
 		export.project.addForm(formName)
-		
+
 		manifestBinder.updateXML(manifest, manifestDocument.documentElement)
 		ManifestUtil.saveDocument(manifestDocument, 'src/main/resources/project/manifest.xml')
 
@@ -58,17 +52,64 @@ class CreateConfiguration extends DefaultTask {
 	}
 
 	@TaskAction
-	def void createConfiguration() {
+	def void createPluginProject() {
 		try {
 			def shortName = project.name.split("-")[1]
 			def name = shortName.toLowerCase()
 
+			def template = { templateName ->
+				[ template: "/templates/flow/pluginProject/$templateName",
+					name: name,
+					shortPluginName: shortName,
+					pluginName: project.name,
+					version: project.version,
+					year: Calendar.getInstance().get(Calendar.YEAR) ]
+			}
+
+			def filePath = { fileName ->
+				[ file: "/templates/flow/pluginProject/$fileName" ]
+			}
+
+			ProjectTemplate.fromUserDir {
+				'.' {
+					'.gitattributes' template('gitattributes')
+					'.gitignore' template('gitignore')
+					'README.md' template('README.md')
+				}
+
+				'pages' { "${project.name}_help.xml" template('pages/plugin_help.xml') }
+				'htdocs' { 'pluginhelp.css' template('htdocs/pluginhelp.css') }
+				'libs' {
+					'annotations-132.839-PATCH1.jar' filePath('libs/annotations-132.839-PATCH1.jar')
+					'commander-client-5.0.0-SNAPSHOT.jar' filePath('libs/commander-client-5.0.0-SNAPSHOT.jar')
+					'ec-test-5.0.0-SNAPSHOT.jar' filePath('libs/ec-test-5.0.0-SNAPSHOT.jar')
+					'gwtp-all-0.8-PATCH5.jar' filePath('libs/gwtp-all-0.8-PATCH5.jar')
+				}
+
+				'src/main/resources/META-INF' { 'plugin.xml' template('src/main/resources/META-INF/plugin.xml') }
+
+				'src/main/resources/project' {
+					'ec_setup.pl' template('src/main/resources/project/ec_setup.pl')
+					'manifest.xml' template('src/main/resources/project/manifest.xml')
+					'project.xml' template('src/main/resources/project/project.xml')
+				}
+
+				'src/main/resources/project/ui_forms' {
+					'createConfigForm.xml' template('src/main/resources/project/ui_forms/createConfigForm.xml')
+					'editConfigForm.xml' template('src/main/resources/project/ui_forms/editConfigForm.xml')
+					'sayHello.xml' template('src/main/resources/project/ui_forms/sayHello.xml')
+				}
+
+				'src/main/resources/project/procedures' { 'sayHello.pl' template('src/main/resources/project/procedures/sayHello.pl') }
+			}
+
 			updatePluginDescriptor(name)
 
-			createForm(project.property('createFormFile'))
-			createForm(project.property('editFormFile'))
-			
-			def form = FormUtil.parseForm(project.property('createFormFile'))
+			def createFormPath = 'src/main/resources/project/ui_forms/createConfigForm.xml'
+			createForm(createFormPath)
+			createForm('src/main/resources/project/ui_forms/editConfigForm.xml')
+
+			def form = FormUtil.parseForm(createFormPath)
 
 			Procedure createProcedure = new Procedure()
 			createProcedure.with {
@@ -239,7 +280,7 @@ class CreateConfiguration extends DefaultTask {
 
 			Property formProperty = new Property()
 			formProperty.with {
-				propertyName = project.property('configPropertyName')
+				propertyName = 'config'
 				propertySheet = new PropertySheet()
 			}
 
@@ -255,7 +296,7 @@ class CreateConfiguration extends DefaultTask {
 
 			FormalParameter parameter = new FormalParameter()
 			parameter.with {
-				formalParameterName = project.property('configPropertyName')
+				formalParameterName = 'config'
 				description = 'The configuration name'
 				type = 'entry'
 				required = 1
@@ -284,7 +325,7 @@ class CreateConfiguration extends DefaultTask {
 			def resourcesPath = "src/main/resources"
 			def projectPath = "$resourcesPath/project"
 
-			def template = { templateName ->
+			template = { templateName ->
 				[ template: "/templates/flow/configuration/$templateName",
 					name: name,
 					shortPluginName: shortName,
@@ -322,7 +363,7 @@ class CreateConfiguration extends DefaultTask {
 			}
 		} catch(MissingPropertyException e) {
 			e.printStackTrace()
-			println '''One of required properties missed: configPropertyName, createFormFile, editFormFile'''
+			println '''An error occured'''
 		}
 	}
 

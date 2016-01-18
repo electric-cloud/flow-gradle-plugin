@@ -14,6 +14,7 @@ import org.gradle.api.tasks.compile.JavaCompile
 
 import com.electriccloud.plugins.tasks.CreateConfiguration
 import com.electriccloud.plugins.tasks.CreateForm
+import com.electriccloud.plugins.tasks.CreatePluginProject;
 import com.electriccloud.plugins.tasks.RemoveForm
 
 
@@ -188,6 +189,7 @@ class BuildPlugin implements Plugin<Project> {
 
 		project.task('createConfiguration', type: CreateConfiguration)
 		project.task('createForm', type: CreateForm)
+		project.task('createPluginProject', type: CreatePluginProject)
 		project.task('removeForm', type: RemoveForm)
 
 		project.configure(project) {

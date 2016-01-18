@@ -14,14 +14,13 @@ buildscript {
 dependencies {
 	compile gradleApi()
 	compile localGroovy()
-	compile 'org.atteo:xml-combiner:+'
 	compile 'org.eclipse.persistence:eclipselink:+'
 	compile 'com.sun.xml.bind:jaxb-core:2.2.11'
 	compile 'com.sun.xml.bind:jaxb-xjc:2.2.11'
 	compile 'com.sun.xml.bind:jaxb-impl:2.2.11'
 	compile 'javax.xml.bind:jaxb-api:2.2.12-b141001.1542'
 	compile 'gradle-templates:gradle-templates:1.5'
-	
+
 
 	runtime 'org.eclipse.persistence:org.eclipse.persistence.moxy:+'
 	runtime 'gradle-templates:gradle-templates:1.5'
@@ -35,8 +34,7 @@ repositories {
 	maven { url 'http://dl.bintray.com/ecpluginsdev/maven' }
 }
 
-test { testLogging { showStandardStreams = true
-	} }
+test { testLogging { showStandardStreams = true } }
 
 // Set generated plugin class files to be compatible with JDK6
 tasks.withType(GroovyCompile) {
@@ -45,7 +43,7 @@ tasks.withType(GroovyCompile) {
 }
 
 group='com.electriccloud.plugins'
-version='1.59'
+version='1.60'
 
 task wrapper(type: Wrapper) { gradleVersion = '2.8' }
 

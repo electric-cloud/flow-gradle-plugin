@@ -1,0 +1,37 @@
+<editor>
+    <formElement>
+        <type>entry</type>
+        <label>Configuration Name:</label>
+        <property>config</property>
+        <value></value>
+        <required>1</required>
+        <documentation>Provide a unique name for the configuration, keeping in mind that you may need to create additional configurations over time.</documentation>
+    </formElement>
+    <formElement>
+        <type>entry</type>
+        <label>Description:</label>
+        <property>desc</property>
+        <value>HelloWorld configuration</value>
+        <documentation>Provide a simple description for this configuration.</documentation>
+    </formElement>
+    <formElement>
+        <type>select</type>
+        <label>Level of formality:</label>
+        <property>formalLevel</property>
+        <value>Informal</value>
+        <documentation>Level of formality to use</documentation>
+        <required>1</required>
+        <option>
+            <name>Surfer</name>
+            <value>Surfer</value>
+        </option>
+        <option>
+            <name>Informal</name>
+            <value>Informal</value>
+        </option>
+        <option>
+            <name>Almost Formal</name>
+            <value>Almost Formal</value>
+        </option>
+    </formElement>
+</editor>

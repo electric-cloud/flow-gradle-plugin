@@ -1,0 +1,11 @@
+.gradle
+build
+.idea
+/bin/
+.classpath
+.project
+.settings
+*.iml
+*~
+ecplugin_test.properties
+ecplugin.properties

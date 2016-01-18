@@ -1,0 +1,11 @@
+<editor>
+    <help>/commander/pages/@PLUGIN_NAME@/@PLUGIN_KEY@_help?s=Administration&amp;ss=Plugins#SayHello</help>
+    <formElement>
+        <label>Configuration:</label>
+        <property>config</property>
+        <value/>
+        <documentation>The name of the configuration to use for saying hello.</documentation>
+        <required>0</required>
+        <type>entry</type>
+    </formElement>
+</editor>

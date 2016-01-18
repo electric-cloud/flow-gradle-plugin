@@ -34,6 +34,8 @@ gwt {
 ```
 # Tasks
 
+createConfiguration - Create new plugin project
+
 createConfiguration - Create configuration for plugin
 Parameters:
 * createFormFile file with FormXML for create configuration

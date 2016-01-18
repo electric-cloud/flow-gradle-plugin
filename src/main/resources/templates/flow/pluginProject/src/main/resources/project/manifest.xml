@@ -1,0 +1,15 @@
+<?xml version='1.0' standalone='yes'?>
+<fileset>
+    <file>
+        <path>ui_forms/sayHello.xml</path>
+        <xpath>//procedure[procedureName=&quot;SayHello&quot;]/propertySheet/property[propertyName=&quot;ec_parameterForm&quot;]/value</xpath>
+    </file>
+    <file>
+        <path>procedures/sayHello.pl</path>
+        <xpath>//step[stepName=&quot;sayHello&quot;]/command</xpath>
+    </file>
+    <file>
+        <path>ec_setup.pl</path>
+        <xpath>//property[propertyName=&quot;ec_setup&quot;]/value</xpath>
+    </file>
+</fileset>

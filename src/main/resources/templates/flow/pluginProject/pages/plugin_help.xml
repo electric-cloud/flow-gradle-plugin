@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta content="text/html; charset=us-ascii" http-equiv="content-type"/>
+        <title>$shortPluginName ElectricFlow Plugin</title>
+        <link rel="stylesheet" href="../../plugins/@PLUGIN_KEY@/pluginhelp.css" type="text/css" media="screen"/>
+    </head>
+
+    <body>
+        <div class="help">
+            <h1>$shortPluginName</h1>
+
+            <p>Plugin Version @PLUGIN_VERSION@</p>
+            <hr style="margin-left: -10px; margin-top: 10px; height: 1px; width: 100%; color: #5981BD;"
+                noshade="noshade"/>
+
+            <p>Created on October 09, 2015</p>
+
+            <h1>Contents</h1>
+
+            <ul>
+                <li>
+                    <p>
+                        <a href="#overview">Overview</a>
+                    </p>
+                </li>
+                <li>
+                    <p>
+                        <a href="#procedures">Plugin Procedures</a>
+                    </p>
+                    <ul>
+                        <li>
+                            <a href="#SayHello">SayHello</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <p>
+                        <a href="#rns">Release Notes</a>
+                    </p>
+                </li>
+            </ul>
+            <h1 id="overview">Overview</h1>
+            <p>$pluginName plugin is the plugin to help you get started with the ElectricCloud open
+                source plugins.
+            </p>
+            <h1 id="procedures">Procedures</h1>
+            <h2 id="SayHello">SayHello</h2>
+            <p>Says hello world!</p>
+        </div>
+    </body>
+</html>

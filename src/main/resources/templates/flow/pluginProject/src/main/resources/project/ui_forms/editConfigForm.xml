@@ -1,0 +1,27 @@
+<editor>
+    <formElement>
+        <type>entry</type>
+        <label>Description:</label>
+        <property>desc</property>
+        <documentation>Provide a simple description for this configuration.</documentation>
+    </formElement>
+    <formElement>
+        <type>select</type>
+        <label>Level of formality:</label>
+        <property>formalLevel</property>
+        <documentation>Level of formality to use</documentation>
+        <required>1</required>
+        <option>
+            <name>Surfer</name>
+            <value>Surfer</value>
+        </option>
+        <option>
+            <name>Informal</name>
+            <value>Informal</value>
+        </option>
+        <option>
+            <name>Almost Formal</name>
+            <value>Almost Formal</value>
+        </option>
+    </formElement>
+</editor>
