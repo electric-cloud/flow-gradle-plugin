@@ -43,7 +43,7 @@ tasks.withType(GroovyCompile) {
 }
 
 group='com.electriccloud.plugins'
-version='1.60'
+version='1.61'
 
 task wrapper(type: Wrapper) { gradleVersion = '2.8' }
 

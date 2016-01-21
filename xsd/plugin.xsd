@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- commander-plugin.xsd This file is a W3C XML Schema that contains the declaration for the elements in a ElectricCommander plugin configuration file. Copyright (c) 2009 Electric Cloud, Inc. All rights 
     reserved. -->
-<xs:schema xmlns="http://electric-cloud.com/commander/3.6/plugins" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://electric-cloud.com/commander/3.6/plugins"
+<xs:schema version="1.0" xmlns="http://electric-cloud.com/commander/3.6/plugins" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://electric-cloud.com/commander/3.6/plugins"
     xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="2.0" attributeFormDefault="unqualified">
     <xs:annotation>
         <xs:appinfo>

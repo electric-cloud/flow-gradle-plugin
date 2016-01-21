@@ -24,9 +24,7 @@ class BuildPlugin implements Plugin<Project> {
 	@Override
 	public void apply(Project project) {
 		project.afterEvaluate {
-
 			project.tasks.with {
-
 				deploy.with {
 					dependsOn('jar')
 					description = 'Deploys plugin on ElectricFlow server'
@@ -57,6 +55,26 @@ class BuildPlugin implements Plugin<Project> {
 					description = 'Run perl unit tests'
 					group = 'ElectricFlow'
 				}
+			}
+
+
+			def resources = project.sourceSets.main.resources
+			def gwtModules = resources.matching { include '**/*.gwt.xml' }.collect {
+				def path = it.path
+				resources.srcDirs.each { dir ->
+					path -= dir.path
+				}
+
+				path = (path.substring(1) - '.gwt.xml')
+				path.replaceAll(File.separator, '.')
+			}
+
+			project.gwt.modules = gwtModules.toArray(new String[0])
+
+			if(project.gwt.modules.size() == 0) {
+				project.tasks.jar.dependsOn = [
+					project.tasks.processProjectXml
+				]
 			}
 		}
 
