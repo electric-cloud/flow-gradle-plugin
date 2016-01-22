@@ -26,15 +26,10 @@ description = "Plugins : <plugin name>"
 version = "1.0.0"
 
 apply plugin: 'flow-gradle-plugin'
-
-gwt {
-	modules 'GWT module name, e.g. ecplugins.<plugin>.ConfigurationManagement'
-}
-
 ```
 # Tasks
 
-createConfiguration - Create new plugin project
+createPluginProject - Create new plugin project
 
 createConfiguration - Create configuration for plugin
 Parameters:
