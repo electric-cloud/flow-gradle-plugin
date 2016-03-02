@@ -43,9 +43,9 @@ tasks.withType(GroovyCompile) {
 }
 
 group='com.electriccloud.plugins'
-version='1.61'
+version='1.63'
 
-task wrapper(type: Wrapper) { gradleVersion = '2.8' }
+task wrapper(type: Wrapper) { gradleVersion = '2.10' }
 
 publishing {
 	repositories { maven { url "$buildDir/repo" } }

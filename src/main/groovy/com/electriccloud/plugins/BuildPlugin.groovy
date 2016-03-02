@@ -66,7 +66,7 @@ class BuildPlugin implements Plugin<Project> {
 				}
 
 				path = (path.substring(1) - '.gwt.xml')
-				path.replaceAll(File.separator, '.')
+				path.replace(File.separator, '.')
 			}
 
 			project.gwt.modules = gwtModules.toArray(new String[0])
@@ -164,6 +164,13 @@ class BuildPlugin implements Plugin<Project> {
 
 					'OUTTOP': outtop
 				]
+
+				def serverOpt = "--server ${project.commanderServer}"
+
+				project.exec {
+					environment envmap
+					commandLine project.ectool, serverOpt, 'login', project.commanderUser, project.commanderPassword
+				}
 
 				project.exec {
 					environment envmap
@@ -308,9 +315,7 @@ class BuildPlugin implements Plugin<Project> {
 				excludes = [
 					'WEB-INF/**',
 					'ecplugins/**',
-					'project/**',
-					'**/*.pl',
-					'**/*.pm'
+					'project/**'
 				]
 
 				from sourceSets.main.output
