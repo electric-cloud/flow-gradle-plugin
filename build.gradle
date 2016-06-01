@@ -34,7 +34,10 @@ repositories {
 	maven { url 'http://dl.bintray.com/ecpluginsdev/maven' }
 }
 
-test { testLogging { showStandardStreams = true } }
+ext {
+	// Use empty bintray key in case it's not defined in gradle.properties
+	bintrayKey = project.hasProperty('bintrayKey') ? project.getProperty('bintrayKey') : ''
+}
 
 // Set generated plugin class files to be compatible with JDK6
 tasks.withType(GroovyCompile) {
