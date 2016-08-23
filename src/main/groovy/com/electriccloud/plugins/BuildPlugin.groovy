@@ -293,6 +293,11 @@ class BuildPlugin implements Plugin<Project> {
 				}
 			}
 
+			license {
+				header = file ('shortHeader.txt')
+				exclude "**/project.xml"
+			}
+
 			jar {
 				dependsOn = [
 					processProjectXml,

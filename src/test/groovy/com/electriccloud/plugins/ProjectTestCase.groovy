@@ -11,7 +11,9 @@ import org.junit.Test
 import org.w3c.dom.Node;
 
 import com.electriccloud.export.ExportUtil
-import com.electriccloud.export.bindings.ExportedData;
+import com.electriccloud.export.bindings.ExportedData
+
+import groovy.xml.XmlUtil;;
 
 
 class ProjectTestCase {
@@ -35,7 +37,7 @@ class ProjectTestCase {
 	}
 
 	def withTestFile(content = null, cl) {
-		def file = new File("${System.getProperty('java.io.tmpdir')}/project.xml")
+		File file = File.createTempFile("project", ".xml")
 		file.delete()
 
 		if(content) {
@@ -43,8 +45,7 @@ class ProjectTestCase {
 		}
 
 		try {
-			XmlUtil.withXml(file.absolutePath, ExportedData.class, cl)
-			cl(binder.unmarshal(ExportUtil.loadDocument(file.absolutePath)).project, file)
+			cl(ExportUtil.binder.unmarshal(ExportUtil.loadDocument(file.absolutePath)).project, file)
 		} catch (all) {
 			file.delete()
 			throw all
