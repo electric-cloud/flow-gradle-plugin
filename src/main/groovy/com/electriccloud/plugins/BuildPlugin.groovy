@@ -249,10 +249,10 @@ class BuildPlugin implements Plugin<Project> {
 			}
 
 			dependencies {
-				compile "${project.group}:commander-sdk:5.+"
-				compile "${project.group}:commander-client:5.+"
-				compile "${project.group}:ec_internal:5.+"
-				testCompile "${project.group}:ec-test:5.+"
+				compile "${project.group}:commander-sdk:6.+"
+				compile "${project.group}:commander-client:6.+"
+				compile "${project.group}:ec_internal:6.+"
+				testCompile "${project.group}:ec-test:6.+"
 
 				compile 'com.intellij:annotations:132.839-PATCH1'
 				compile 'com.google.guava:guava-gwt:16.+'
