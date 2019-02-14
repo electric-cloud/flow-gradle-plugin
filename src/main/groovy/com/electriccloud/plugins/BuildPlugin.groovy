@@ -282,7 +282,8 @@ class BuildPlugin implements Plugin<Project> {
 					"**/*.css",
 					"**/*.pm",
 					"**/*.pl",
-					"**/*.cgi"
+					"**/*.cgi",
+					"htdocs/**.js",
 				].each {
 					filesMatching(it, {
 						filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: [
