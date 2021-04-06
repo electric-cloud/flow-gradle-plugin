@@ -10,26 +10,23 @@ dependencies {
 	compile 'com.sun.xml.bind:jaxb-xjc:2.2.11'
 	compile 'com.sun.xml.bind:jaxb-impl:2.2.11'
 	compile 'javax.xml.bind:jaxb-api:2.2.12-b141001.1542'
-	//compile 'gradle-templates:gradle-templates:1.5'
-	//todo republish this under normal version
-	compile 'gradle-templates:gradle-templates:1.6-SNAPSHOT'
+	compile 'gradle-templates:gradle-templates:1.5.1'
 	compile 'junit:junit:4.4'
 
 	compile 'org.eclipse.persistence:org.eclipse.persistence.moxy:2.7.3'
-	compile 'de.richsource.gradle.plugins:gwt-gradle-plugin:+'
+	compile 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.7'
 	compile 'nl.javadude.gradle.plugins:license-gradle-plugin:0.10.0'
 
-	compile 'com.google.guava:guava-gwt:16.+'
-	compile 'com.google.gwt.inject:gin:1.5.+'
+	compile 'com.google.guava:guava-gwt:16.0.1'
+	compile 'com.google.gwt.inject:gin:1.5.0'
 	compile 'com.gwtplatform:gwtp-all:0.8-PATCH5'
-	compile 'com.google.gwt:gwt-dev:2.5.+'
-	compile 'com.google.gwt:gwt-servlet:2.5.+'
-	compile 'com.google.gwt:gwt-user:2.5.+'
+	compile 'com.google.gwt:gwt-dev:2.5.1'
+	compile 'com.google.gwt:gwt-servlet:2.5.1'
+	compile 'com.google.gwt:gwt-user:2.5.1'
 }
 
 repositories {
 	mavenCentral()
-	//mavenLocal()
 
 	maven {
 		url 'https://nexus-internal.cloudbees.com/content/repositories/snapshots'
@@ -56,7 +53,7 @@ tasks.withType(GroovyCompile) {
 }
 
 group='com.electriccloud.plugins'
-version='2.4-SNAPSHOT'
+version='2.4'
 
 task wrapper(type: Wrapper) { gradleVersion = '2.13' }
 
