@@ -1,42 +1,49 @@
-buildscript {
-	repositories {
-		mavenCentral()
-		jcenter()
-	}
-
-	dependencies { classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.2' }
-}
-
 apply plugin: 'groovy'
 apply plugin: 'maven-publish'
-apply plugin: 'com.jfrog.bintray'
 
 dependencies {
 	compile gradleApi()
 	compile localGroovy()
+	compile 'com.intellij:annotations:132.839-PATCH1'
 	compile 'org.eclipse.persistence:eclipselink:2.7.3'
 	compile 'com.sun.xml.bind:jaxb-core:2.2.11'
 	compile 'com.sun.xml.bind:jaxb-xjc:2.2.11'
 	compile 'com.sun.xml.bind:jaxb-impl:2.2.11'
 	compile 'javax.xml.bind:jaxb-api:2.2.12-b141001.1542'
-	compile 'gradle-templates:gradle-templates:1.5'
+	compile 'gradle-templates:gradle-templates:1.5.1'
 	compile 'junit:junit:4.4'
 
-	runtime 'org.eclipse.persistence:org.eclipse.persistence.moxy:2.7.3'
-	runtime 'gradle-templates:gradle-templates:1.5'
-	runtime 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.4'
-	runtime 'nl.javadude.gradle.plugins:license-gradle-plugin:0.11.0'
+	compile 'org.eclipse.persistence:org.eclipse.persistence.moxy:2.7.3'
+	compile 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.7'
+	compile 'nl.javadude.gradle.plugins:license-gradle-plugin:0.10.0'
+
+	compile 'com.google.guava:guava-gwt:16.0.1'
+	compile 'com.google.gwt.inject:gin:1.5.0'
+	compile 'com.gwtplatform:gwtp-all:0.8-PATCH5'
+	compile 'com.google.gwt:gwt-dev:2.5.1'
+	compile 'com.google.gwt:gwt-servlet:2.5.1'
+	compile 'com.google.gwt:gwt-user:2.5.1'
 }
 
 repositories {
 	mavenCentral()
-	jcenter()
-	maven { url 'http://dl.bintray.com/ecpluginsdev/maven' }
-}
 
-ext {
-	// Use empty bintray key in case it's not defined in gradle.properties
-	bintrayKey = project.hasProperty('bintrayKey') ? project.getProperty('bintrayKey') : ''
+	maven {
+		url 'https://nexus-internal.cloudbees.com/content/repositories/snapshots'
+		credentials {
+			username = nexusUsername
+			password = nexusPassword
+		}
+	}
+	maven {
+		url 'https://nexus-internal.cloudbees.com/content/groups/mirror'
+		credentials {
+			username = nexusUsername
+			password = nexusPassword
+		}
+	}
+	//maven { url "http://art.nimbus.beescloud.com/artifactory/jcenter" }
+	//maven { url "http://art.nimbus.beescloud.com/artifactory/bintray" }
 }
 
 // Set generated plugin class files to be compatible with JDK6
@@ -46,7 +53,7 @@ tasks.withType(GroovyCompile) {
 }
 
 group='com.electriccloud.plugins'
-version='2.2'
+version='2.4'
 
 task wrapper(type: Wrapper) { gradleVersion = '2.13' }
 
@@ -56,22 +63,44 @@ publishing {
 	publications {
 		maven(MavenPublication) { from components.java }
 	}
-}
 
-bintray {
-	user = 'ecpluginsdev'
-	key = bintrayKey
-	publish = true
-	dryRun = false
-	publications = ['maven']
+	repositories {
+		maven {
+			credentials {
+				username "$nexusUsername"
+				password "$nexusPassword"
+			}
 
-	pkg {
-		repo = 'maven'
-		name = project.name
-		desc = 'A gradle plugin that houses the logic to build ElectricFlow plugins'
-		websiteUrl = 'http://electric-cloud.com'
-		licenses = ['mit']
-		publicDownloadNumbers = true
-		vcsUrl = 'https://github.com/electriccommunity/flow-gradle-plugin.git'
+			if(project.version.endsWith('-SNAPSHOT')) {
+				url "https://nexus-internal.cloudbees.com/content/repositories/snapshots"
+			} else {
+				url "https://nexus-internal.cloudbees.com/service/local/staging/deploy/maven2"
+			}
+		}
 	}
 }
+
+task getURLofDependencyArtifact() {
+	doFirst {
+		project.configurations.compile.dependencies.each { dependency ->
+			for (ArtifactRepository repository : project.repositories.asList()) {
+				def url = repository.properties.get('url')
+				//https://repo.maven.apache.org/maven2/com/google/code/gson/gson/2.8.6/gson-2.8.6.jar
+				def jarUrl = String.format("%s%s/%s/%s/%s-%s.jar", url.toString(),
+					dependency.group?.replace('.', '/'), dependency.name, dependency.version,
+					dependency.name, dependency.version)
+				try {
+					def jarfile = new URL(jarUrl)
+					def inStream = jarfile.openStream();
+					if (inStream != null) {
+						println(String.format("%s:%s:%s", dependency.group, dependency.name, dependency.version)
+							+ " -> " + jarUrl)
+						return
+					}
+				} catch (Exception ignored) {
+				}
+			}
+		}
+	}
+}
+
