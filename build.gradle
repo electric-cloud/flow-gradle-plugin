@@ -26,20 +26,11 @@ dependencies {
 }
 
 repositories {
-	mavenCentral()
-
 	maven {
-		url 'https://nexus-internal.cloudbees.com/content/repositories/snapshots'
+		url 'https://proxy.artifacts.cloudbees.com/repository/mirror'
 		credentials {
-			username = nexusUsername
-			password = nexusPassword
-		}
-	}
-	maven {
-		url 'https://nexus-internal.cloudbees.com/content/groups/mirror'
-		credentials {
-			username = nexusUsername
-			password = nexusPassword
+			username = System.getenv('NEXUS_USERNAME') ?: nexusUsername
+			password = System.getenv('NEXUS_PASSWORD') ?: nexusPassword
 		}
 	}
 	//maven { url "http://art.nimbus.beescloud.com/artifactory/jcenter" }
@@ -61,20 +52,33 @@ publishing {
 	repositories { maven { url "$buildDir/repo" } }
 
 	publications {
-		maven(MavenPublication) { from components.java }
+		maven(MavenPublication) {
+			from components.java
+			pom {
+				scm {
+					connection = "scm:git:ssh://github.com/electric-cloud/flow-gradle-plugin.git"
+					developerConnection = "scm:git:ssh://github.com/electric-cloud/flow-gradle-plugin.git"
+					url = "https://github.com/electric-cloud/flow-gradle-plugin/"
+					if (project.version.endsWith('-SNAPSHOT')) {
+						tag = "HEAD"
+					} else {
+						tag = "v${project.version}"
+					}
+				}
+		}
 	}
 
 	repositories {
 		maven {
 			credentials {
-				username "$nexusUsername"
-				password "$nexusPassword"
+				username = System.getenv('NEXUS_USERNAME') ?: nexusUsername
+				password = System.getenv('NEXUS_PASSWORD') ?: nexusPassword
 			}
 
 			if(project.version.endsWith('-SNAPSHOT')) {
-				url "https://nexus-internal.cloudbees.com/content/repositories/snapshots"
+				url "https://artifacts.cloudbees.com/repository/maven-snapshots/"
 			} else {
-				url "https://nexus-internal.cloudbees.com/service/local/staging/deploy/maven2"
+				url "https://artifacts.cloudbees.com/repository/maven-private-releases/"
 			}
 		}
 	}
